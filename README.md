@@ -7,5 +7,7 @@ Each step will include exported workflows and notes.
 ## Workflows
 - **Gmail → Google Sheets integration**  
   A workflow that sends an email and appends the message & timestamp to a Google Sheet.
+  See all screenshots for this workflow [here](screenshots/workflow1).
+
 
 More workflows will be added as I progress in the course!
