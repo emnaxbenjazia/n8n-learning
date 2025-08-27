@@ -1,0 +1,208 @@
+{
+  "name": "gmail and gsheets",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        0
+      ],
+      "id": "76f28e5b-1069-4df8-a6a3-3a63a4067445",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "content": "I used the node \"Edit Fields\" to keep the values \"dateTime\" and \"message\" from the email in order to later append them in the sheet, since the email node doesnt have an output variable containing the message."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -64,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "8247119c-01c9-4412-9bc4-6efc82d11a38",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17YpuYLg3LrKj_l-HB3TIVXJpnaZEivIeUfoaKiJEpqI",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date & Time": "={{$node[\"Edit Fields\"].json.dateTime}}",
+            "Message": "={{$node[\"Edit Fields\"].json.message}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date & Time",
+              "displayName": "Date & Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        464,
+        0
+      ],
+      "id": "95a2f618-d3b3-49de-8c01-3a82b805a9d9",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "uB4HjktIT8I5H7vs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json.to}}",
+        "subject": "={{$json.subject}}",
+        "emailType": "text",
+        "message": "={{$json.message}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "e6afdcd6-f7b0-4817-b2cd-67ced4b93bb9",
+      "name": "email",
+      "webhookId": "8db7eee3-834c-45a7-95fd-b36295e35da6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vX0xWCYW16XD8LWq",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b793e29c-9ee9-422b-bc2a-d39828d55da0",
+              "name": "to",
+              "value": "benjaziaemna1994@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "47011e5b-3c7e-4dde-92b5-1322a06daa8b",
+              "name": "subject",
+              "value": "n8n test",
+              "type": "string"
+            },
+            {
+              "id": "fff58a7b-a3e5-418b-bf38-5f8e93a7050e",
+              "name": "message",
+              "value": "LOCK IN",
+              "type": "string"
+            },
+            {
+              "id": "bd45e5c9-e482-41d1-8f25-eb7fe689efb4",
+              "name": "dateTime",
+              "value": "={{$now.format(\"dd-MM-yyyy HH:mm:ss\")}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        16,
+        0
+      ],
+      "id": "0f2ae4d5-222a-40b8-8495-d73305653061",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "email": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f4f91a1f-c85a-48b7-b173-c84535d27be3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8500c4df90b39f73ad9a3c075699680986835e517dbad98fe84be1f06a4b78f"
+  },
+  "id": "ZXEKmuGLn86OzdtC",
+  "tags": []
+}
