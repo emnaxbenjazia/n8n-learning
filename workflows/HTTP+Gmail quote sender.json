@@ -1,0 +1,89 @@
+{
+  "name": "HTTP+Gmail quote sender",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -16
+      ],
+      "id": "aa29c707-ca06-46ba-9067-865765c2e343",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://zenquotes.io/api/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -432,
+        -16
+      ],
+      "id": "f8a30afb-1999-4be6-953d-4d8ee753c411",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "sendTo": "benjaziaemna1994@gmail.com",
+        "subject": "Today's Quote",
+        "message": "=Today's quote:\n{{ $json.h }}\nby {{ $json.a }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -224,
+        -16
+      ],
+      "id": "c9c62d1a-8efb-4dac-832e-9bf2ecee8b58",
+      "name": "Send a message",
+      "webhookId": "84fc66ae-826e-4353-bc89-eb7233cf9a49",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vX0xWCYW16XD8LWq",
+          "name": "Gmail account emnaxbenjazia"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a6168b15-1f8b-4e4c-95f9-1d0f0dceb597",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8500c4df90b39f73ad9a3c075699680986835e517dbad98fe84be1f06a4b78f"
+  },
+  "id": "bE6NFAFmn0SAnuTd",
+  "tags": []
+}
