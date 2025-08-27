@@ -44,9 +44,3 @@ This workflow fetches a random inspirational quote from an API and sends it by e
 - This is a simple example of combining:
   - **Data retrieval (HTTP API)**
   - **Data delivery (Gmail)**
-
-## Possible Improvements
-
-- Add a **Schedule Trigger** so the workflow runs automatically every morning.
-- Store quotes in a **Google Sheet** for logging.
-- Send the email to multiple recipients.
