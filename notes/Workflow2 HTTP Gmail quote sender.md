@@ -5,10 +5,12 @@ This workflow fetches a random inspirational quote from an API and sends it by e
 ## Workflow Breakdown
 
 1. **When clicking 'Execute workflow' (Trigger)**
+
    - Manually starts the workflow when the "Execute Workflow" button is clicked.
    - This is just for testing/demonstration. In a real case, it could be scheduled or event-based.
 
 2. **HTTP Request (zenquotes.io)**
+
    - Makes a GET request to [zenquotes.io/api/random](https://zenquotes.io/api/random).
    - The API responds with a random quote in JSON format.
    - Example output:
@@ -44,9 +46,3 @@ This workflow fetches a random inspirational quote from an API and sends it by e
 - This is a simple example of combining:
   - **Data retrieval (HTTP API)**
   - **Data delivery (Gmail)**
-
-## Possible Improvements
-
-- Add a **Schedule Trigger** so the workflow runs automatically every morning.
-- Store quotes in a **Google Sheet** for logging.
-- Send the email to multiple recipients.

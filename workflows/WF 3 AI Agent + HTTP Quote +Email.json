@@ -1,0 +1,154 @@
+{
+  "name": "AI Agent + Email",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "send a random quote ",
+        "options": {
+          "systemMessage": "You are a helpful assistant who uses the HTTP tool to retreive a random quote, then uses the Gmail tool to send it in an email. Use beautiful and clean HTML formatting (use the variable h)"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "1f92dc0c-fb6e-45ef-9bd0-29ca22188f91",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "deepseek-chat",
+          "mode": "list",
+          "cachedResultName": "deepseek-chat"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        288,
+        208
+      ],
+      "id": "9d22a68c-5163-43ed-8ee9-2c516bacafce",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jhCLvD30n9eA6qiG",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "benjaziaemna1994@gmail.com",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        832,
+        176
+      ],
+      "id": "46bcc89e-c380-4af4-bc53-c990384b77b5",
+      "name": "Send a message in Gmail",
+      "webhookId": "17ee44db-7ea3-4870-a1af-cf91c5162eb4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vX0xWCYW16XD8LWq",
+          "name": "Gmail account emnaxbenjazia"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        52.80000000000005,
+        0
+      ],
+      "id": "92bc65c5-9078-4e73-aa86-1c81ee733be6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "toolDescription": "retreives a random quote",
+        "url": "https://zenquotes.io/api/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        176
+      ],
+      "id": "159227cf-68f1-457e-b192-b6c135ea0fb1",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "555782fb-b08b-487f-8183-62eaf07c13e7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8500c4df90b39f73ad9a3c075699680986835e517dbad98fe84be1f06a4b78f"
+  },
+  "id": "JyB7ptqd17RfnE2p",
+  "tags": []
+}
