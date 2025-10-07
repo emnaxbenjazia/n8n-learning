@@ -1,0 +1,264 @@
+{
+  "name": "Research Article Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3de63423-5448-4f5a-be8a-4d4ed11fbe3f",
+      "name": "When chat message received",
+      "webhookId": "21c7b78f-0e26-45a6-b2ab-1ed2932c0ce6"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You will receive a URL. Your job is to:\n1) Use the website_scraper tool to fetch the page content (HTML/text). Do NOT summarize without scraping.\n2) Extract the true article title and the main body content (avoid nav/boilerplate/footers).\n3) Produce a concise summary (1–3 sentences) that captures the core idea of the article.\n4) Choose a single, generic theme for the article (e.g., \"ai\", \"programming\", \"security\", \"business\", \"design\"). If unsure, use \"general\".\n5) Save the result to Notion by calling save_to_notion exactly once with the parameters below.\n\n## Tools\n- website_scraper: fetches the page content for a given URL.\n- save_to_notion: writes one row into a Notion database.\n\n### save_to_notion parameters (REQUIRED)\n- title (string): the original article title (cleaned, no site suffix if possible).\n- summary (string): 1–3 sentence summary of the article’s main idea, in plain text (no markdown).\n- url (string): the original URL.\n- theme (string): one generic theme for the article.\n\n### Output & constraints\n- Always call website_scraper first, then save_to_notion exactly once.\n- Do NOT include code fences, backticks, or markdown in parameter values.\n- Keep summary short, factual, and free of fluff.\n- If the page is not an article or has almost no readable text, set title to the page title and summary to \"insufficient content\", theme \"general\", and still save.\n\n### Example save_to_notion call (schema shape)\n{\n  \"title\": \"Practical Intro to Vector Databases \",\n  \"summary\": \"Explains what vector databases are, how embeddings enable semantic search, and when to use them over keyword indexes.\",\n  \"url\": \"https://example.com/vector-db-intro\",\n  \"theme\": \"ai\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "65978559-630f-4394-b035-25258eb4d575",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "deepseek-chat",
+          "mode": "list",
+          "cachedResultName": "deepseek-chat"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        64,
+        192
+      ],
+      "id": "850dda3b-94c9-4246-9e52-8a90314d2b74",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jhCLvD30n9eA6qiG",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://browserless:3000/content",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "urIt0uRHdIdT4h5MIe23LCGLGWDoRAS9qb"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"url\": \"{{ $('When chat message received').item.json.chatInput }}\",\n  \"gotoOptions\": { \"waitUntil\": \"networkidle0\" }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        192
+      ],
+      "id": "1cc72fac-1ee6-466f-9c46-0025fb4f8c3d",
+      "name": "website_scraper"
+    },
+    {
+      "parameters": {
+        "content": "## to be able to use Browserless\nn8n and browserless are in different docker containers, so i put them in the same docker network \"automation-net\" to allow n8n to access browserless via localhost",
+        "height": 128,
+        "width": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2000,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "e7afa560-32bf-4c73-8b16-8aa583f71d53",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Browserless URL malfunction\nif the URL doesnt work (No matching HTTP route handler) then it's probably due to extra characters malforming the URL ->  import the cURL using:\ncurl -X POST \"http://browserless:3000/content?token=urIt0uRHdIdT4h5MIe23LCGLGWDoRAS9qb\" \\\n  -H \"Content-Type: application/json\" \\\n  -d \"{\\\"url\\\":\\\"https://example.com\\\",\\\"gotoOptions\\\":{\\\"waitUntil\\\":\\\"networkidle0\\\"}}\"\n",
+        "height": 240,
+        "width": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1984,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "79bef8a8-92a3-46c8-9dbe-5422a2daa79f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Create a page in Notionsave_to_notion: this tool saves the information to a notion page",
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "26058156-8697-806f-b5a5-cdd31531bc35",
+          "mode": "list",
+          "cachedResultName": "Research Summaries",
+          "cachedResultUrl": "https://www.notion.so/260581568697806fb5a5cdd31531bc35"
+        },
+        "title": "={{ $fromAI('title', 'The original title of the article. Add one emoji that best represents the article.', 'string') }}\n",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Summary|rich_text",
+              "textContent": "={{ $fromAI('summary', 'Write a concise 1–3 sentence summary that captures the essence of the article.', 'string') }}\n"
+            },
+            {
+              "key": "URL|url",
+              "urlValue": "={{ $('When chat message received').item.json.chatInput }}"
+            },
+            {
+              "key": "Theme|rich_text",
+              "textContent": "={{ $fromAI('theme', 'Come up with a one- or two-word high-level theme that categorizes this article (e.g., AI, Cloud, Databases, Cybersecurity).', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notionTool",
+      "typeVersion": 2.2,
+      "position": [
+        304,
+        192
+      ],
+      "id": "c5961701-1085-45ab-ae40-2367422ffc0f",
+      "name": "save_to_notion",
+      "credentials": {
+        "notionApi": {
+          "id": "OAlQiGA0kZO1cYoS",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $fromAI('Message', `Confirmation that research was done along with the URL to the article itself, and URL to the notion page where the research was logged. `, 'string') }}",
+        "options": {},
+        "embeds": {
+          "values": [
+            {
+              "description": "=\nArticle Theme: {{ $fromAI('Theme', 'The theme of the article.', 'string') }}\n",
+              "author": "Your Favorite Research Bot",
+              "color": "#00AAFF",
+              "title": "={{ $fromAI('Title', 'The original title of the article with one emoji', 'string') }}",
+              "url": "={{ $fromAI('URL', 'The URL of the Notion page where the summary is saved.', 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.discordTool",
+      "typeVersion": 2,
+      "position": [
+        464,
+        192
+      ],
+      "id": "45d1726e-7e9c-40e0-811d-94740b3579dc",
+      "name": "discord notification",
+      "webhookId": "52e6e508-9f7e-4119-a164-78ea15a573f1",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "OCOMHziJxo7O79zs",
+          "name": "Discord Bot account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "website_scraper": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save_to_notion": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "discord notification": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c838a13a-2c7d-417f-afa9-bb483035c3fb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8500c4df90b39f73ad9a3c075699680986835e517dbad98fe84be1f06a4b78f"
+  },
+  "id": "6HB1oSFM6sALIbaY",
+  "tags": []
+}
